@@ -1,0 +1,135 @@
+   1              		.cpu arm7tdmi
+   2              		.fpu softvfp
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 6
+  10              		.eabi_attribute 18, 4
+  11              		.file	"at24C04.c"
+  21              	.Ltext0:
+  22              		.file 1 "../at24C04.c"
+ 1657              		.align	2
+ 1658              		.global	at24c04_bytewrite
+ 1660              	at24c04_bytewrite:
+ 1661              	.LFB0:
+   1:../at24C04.c  **** #include "s3c44b0x.h"
+   2:../at24C04.c  **** #include "at24c04.h"
+   3:../at24C04.c  **** #include "iic.h"
+   4:../at24C04.c  **** 
+   5:../at24C04.c  **** 
+   6:../at24C04.c  **** void at24c04_bytewrite( uint16 addr, uint8 data )
+   7:../at24C04.c  **** {
+ 1662              		.loc 1 7 0
+ 1663              		.cfi_startproc
+ 1664              		@ Function supports interworking.
+ 1665              		@ args = 0, pretend = 0, frame = 8
+ 1666              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1667 0000 0DC0A0E1 		mov	ip, sp
+ 1668              	.LCFI0:
+ 1669              		.cfi_def_cfa_register 12
+ 1670 0004 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1671 0008 04B04CE2 		sub	fp, ip, #4
+ 1672              		.cfi_offset 14, -8
+ 1673              		.cfi_offset 13, -12
+ 1674              		.cfi_offset 11, -16
+ 1675              	.LCFI1:
+ 1676              		.cfi_def_cfa 11, 4
+ 1677 000c 08D04DE2 		sub	sp, sp, #8
+ 1678 0010 0020A0E1 		mov	r2, r0
+ 1679 0014 0130A0E1 		mov	r3, r1
+ 1680 0018 BE204BE1 		strh	r2, [fp, #-14]	@ movhi
+ 1681 001c 0F304BE5 		strb	r3, [fp, #-15]
+   8:../at24C04.c  **** 	iic_putByte_start(AT24C04_ADDRESS_WRITE);
+ 1682              		.loc 1 8 0
+ 1683 0020 A000A0E3 		mov	r0, #160
+ 1684 0024 FEFFFFEB 		bl	iic_putByte_start
+   9:../at24C04.c  **** 	iic_putByte( addr & 0xFF );
+ 1685              		.loc 1 9 0
+ 1686 0028 BE305BE1 		ldrh	r3, [fp, #-14]	@ movhi
+ 1687 002c FF3003E2 		and	r3, r3, #255
+ 1688 0030 0300A0E1 		mov	r0, r3
+ 1689 0034 FEFFFFEB 		bl	iic_putByte
+  10:../at24C04.c  **** 	iic_putByte_stop( data );
+ 1690              		.loc 1 10 0
+ 1691 0038 0F305BE5 		ldrb	r3, [fp, #-15]	@ zero_extendqisi2
+ 1692 003c 0300A0E1 		mov	r0, r3
+ 1693 0040 FEFFFFEB 		bl	iic_putByte_stop
+  11:../at24C04.c  **** }
+ 1694              		.loc 1 11 0
+ 1695 0044 0CD04BE2 		sub	sp, fp, #12
+ 1696 0048 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1697 004c 1EFF2FE1 		bx	lr
+ 1698              		.cfi_endproc
+ 1699              	.LFE0:
+ 1701              		.align	2
+ 1702              		.global	at24c04_byteread
+ 1704              	at24c04_byteread:
+ 1705              	.LFB1:
+  12:../at24C04.c  **** 	
+  13:../at24C04.c  **** void at24c04_byteread( uint16 addr, uint8 *data )
+  14:../at24C04.c  **** {
+ 1706              		.loc 1 14 0
+ 1707              		.cfi_startproc
+ 1708              		@ Function supports interworking.
+ 1709              		@ args = 0, pretend = 0, frame = 8
+ 1710              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1711 0050 0DC0A0E1 		mov	ip, sp
+ 1712              	.LCFI2:
+ 1713              		.cfi_def_cfa_register 12
+ 1714 0054 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1715 0058 04B04CE2 		sub	fp, ip, #4
+ 1716              		.cfi_offset 14, -8
+ 1717              		.cfi_offset 13, -12
+ 1718              		.cfi_offset 11, -16
+ 1719              	.LCFI3:
+ 1720              		.cfi_def_cfa 11, 4
+ 1721 005c 08D04DE2 		sub	sp, sp, #8
+ 1722 0060 0030A0E1 		mov	r3, r0
+ 1723 0064 14100BE5 		str	r1, [fp, #-20]
+ 1724 0068 BE304BE1 		strh	r3, [fp, #-14]	@ movhi
+  15:../at24C04.c  ****     iic_putByte_start(AT24C04_ADDRESS_WRITE);  // Lleva el contador de dirección de la EEPROM a la 
+ 1725              		.loc 1 15 0
+ 1726 006c A000A0E3 		mov	r0, #160
+ 1727 0070 FEFFFFEB 		bl	iic_putByte_start
+  16:../at24C04.c  **** 	iic_putByte( addr & 0xFF );
+ 1728              		.loc 1 16 0
+ 1729 0074 BE305BE1 		ldrh	r3, [fp, #-14]	@ movhi
+ 1730 0078 FF3003E2 		and	r3, r3, #255
+ 1731 007c 0300A0E1 		mov	r0, r3
+ 1732 0080 FEFFFFEB 		bl	iic_putByte
+  17:../at24C04.c  **** 	iic_getByte_start(AT24C04_ADDRESS_READ);
+ 1733              		.loc 1 17 0
+ 1734 0084 A100A0E3 		mov	r0, #161
+ 1735 0088 FEFFFFEB 		bl	iic_getByte_start
+  18:../at24C04.c  **** 	*data = iic_getByte_stop( NO_RxACK ); 								// En una EEPROM, no debe generarse ACK tras el últi
+ 1736              		.loc 1 18 0
+ 1737 008c 0000A0E3 		mov	r0, #0
+ 1738 0090 FEFFFFEB 		bl	iic_getByte_stop
+ 1739 0094 0030A0E1 		mov	r3, r0
+ 1740 0098 0320A0E1 		mov	r2, r3
+ 1741 009c 14301BE5 		ldr	r3, [fp, #-20]
+ 1742 00a0 0020C3E5 		strb	r2, [r3, #0]
+  19:../at24C04.c  **** }
+ 1743              		.loc 1 19 0
+ 1744 00a4 0CD04BE2 		sub	sp, fp, #12
+ 1745 00a8 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1746 00ac 1EFF2FE1 		bx	lr
+ 1747              		.cfi_endproc
+ 1748              	.LFE1:
+ 1750              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 at24C04.c
+C:\Users\USUARI~1\AppData\Local\Temp\ccvLNppc.s:1657   .text:00000000 $a
+C:\Users\USUARI~1\AppData\Local\Temp\ccvLNppc.s:1660   .text:00000000 at24c04_bytewrite
+C:\Users\USUARI~1\AppData\Local\Temp\ccvLNppc.s:1704   .text:00000050 at24c04_byteread
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+iic_putByte_start
+iic_putByte
+iic_putByte_stop
+iic_getByte_start
+iic_getByte_stop

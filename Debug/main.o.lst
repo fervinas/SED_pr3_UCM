@@ -1,0 +1,189 @@
+   1              		.cpu arm7tdmi
+   2              		.fpu softvfp
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 6
+  10              		.eabi_attribute 18, 4
+  11              		.file	"main.c"
+  21              	.Ltext0:
+  22              		.file 1 "../main.c"
+ 1830              		.align	2
+ 1831              		.global	Main
+ 1833              	Main:
+ 1834              	.LFB0:
+   1:../main.c     **** #include "s3c44b0x.h"
+   2:../main.c     **** #include "s3cev40.h"
+   3:../main.c     **** #include "common_types.h"
+   4:../main.c     **** #include "at24c04.h"
+   5:../main.c     **** 
+   6:../main.c     **** 
+   7:../main.c     **** extern void DelayMs(int ms_time);
+   8:../main.c     **** extern void sys_init();
+   9:../main.c     **** extern void iic_init();
+  10:../main.c     **** extern void D8Led_symbol(int value);
+  11:../main.c     **** extern void at24c04_bytewrite( uint16 addr, uint8 data );
+  12:../main.c     **** extern void at24c04_byteread( uint16 addr, uint8 *data );
+  13:../main.c     **** 
+  14:../main.c     **** int val;
+  15:../main.c     **** 
+  16:../main.c     **** void Main( void )
+  17:../main.c     **** {
+ 1835              		.loc 1 17 0
+ 1836              		.cfi_startproc
+ 1837              		@ Function supports interworking.
+ 1838              		@ args = 0, pretend = 0, frame = 520
+ 1839              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1840 0000 0DC0A0E1 		mov	ip, sp
+ 1841              	.LCFI0:
+ 1842              		.cfi_def_cfa_register 12
+ 1843 0004 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1844 0008 04B04CE2 		sub	fp, ip, #4
+ 1845              		.cfi_offset 14, -8
+ 1846              		.cfi_offset 13, -12
+ 1847              		.cfi_offset 11, -16
+ 1848              	.LCFI1:
+ 1849              		.cfi_def_cfa 11, 4
+ 1850 000c 82DF4DE2 		sub	sp, sp, #520
+  18:../main.c     ****     uint8 buffer[AT24C04_DEPTH];
+  19:../main.c     ****     uint16 i;
+  20:../main.c     ****     
+  21:../main.c     ****     sys_init();
+ 1851              		.loc 1 21 0
+ 1852 0010 FEFFFFEB 		bl	sys_init
+  22:../main.c     **** 
+  23:../main.c     ****     iic_init();
+ 1853              		.loc 1 23 0
+ 1854 0014 FEFFFFEB 		bl	iic_init
+  24:../main.c     ****     D8Led_symbol(8);//8
+ 1855              		.loc 1 24 0
+ 1856 0018 0800A0E3 		mov	r0, #8
+ 1857 001c FEFFFFEB 		bl	D8Led_symbol
+  25:../main.c     **** 
+  26:../main.c     ****     //Inicializamos la EEPROM
+  27:../main.c     ****     for( i=0; i<AT24C04_DEPTH; i++ ){
+ 1858              		.loc 1 27 0
+ 1859 0020 0030A0E3 		mov	r3, #0
+ 1860 0024 BE304BE1 		strh	r3, [fp, #-14]	@ movhi
+ 1861 0028 0E0000EA 		b	.L2
+ 1862              	.L3:
+  28:../main.c     ****       val = (uint8)i%16;
+ 1863              		.loc 1 28 0 discriminator 2
+ 1864 002c BE305BE1 		ldrh	r3, [fp, #-14]	@ movhi
+ 1865 0030 FF3003E2 		and	r3, r3, #255
+ 1866 0034 0F2003E2 		and	r2, r3, #15
+ 1867 0038 C4309FE5 		ldr	r3, .L7
+ 1868 003c 002083E5 		str	r2, [r3, #0]
+  29:../main.c     ****       at24c04_bytewrite( i, val );
+ 1869              		.loc 1 29 0 discriminator 2
+ 1870 0040 BC309FE5 		ldr	r3, .L7
+ 1871 0044 003093E5 		ldr	r3, [r3, #0]
+ 1872 0048 FF3003E2 		and	r3, r3, #255
+ 1873 004c BE205BE1 		ldrh	r2, [fp, #-14]
+ 1874 0050 0200A0E1 		mov	r0, r2
+ 1875 0054 0310A0E1 		mov	r1, r3
+ 1876 0058 FEFFFFEB 		bl	at24c04_bytewrite
+  27:../main.c     ****     for( i=0; i<AT24C04_DEPTH; i++ ){
+ 1877              		.loc 1 27 0 discriminator 2
+ 1878 005c BE305BE1 		ldrh	r3, [fp, #-14]	@ movhi
+ 1879 0060 013083E2 		add	r3, r3, #1
+ 1880 0064 BE304BE1 		strh	r3, [fp, #-14]	@ movhi
+ 1881              	.L2:
+  27:../main.c     ****     for( i=0; i<AT24C04_DEPTH; i++ ){
+ 1882              		.loc 1 27 0 is_stmt 0 discriminator 1
+ 1883 0068 BE205BE1 		ldrh	r2, [fp, #-14]
+ 1884 006c 94309FE5 		ldr	r3, .L7+4
+ 1885 0070 030052E1 		cmp	r2, r3
+ 1886 0074 ECFFFF9A 		bls	.L3
+  30:../main.c     ****     }
+  31:../main.c     **** 
+  32:../main.c     ****     /*for( i=0; i<AT24C04_DEPTH; i++ ){
+  33:../main.c     ****       golden_at24c04_byteread( i, &buffer[i] );
+  34:../main.c     ****     }*/
+  35:../main.c     **** 
+  36:../main.c     ****     DelayMs(100);
+ 1887              		.loc 1 36 0 is_stmt 1
+ 1888 0078 6400A0E3 		mov	r0, #100
+ 1889 007c FEFFFFEB 		bl	DelayMs
+  37:../main.c     **** 
+  38:../main.c     ****     for( i=0; i<AT24C04_DEPTH; i++ ){
+ 1890              		.loc 1 38 0
+ 1891 0080 0030A0E3 		mov	r3, #0
+ 1892 0084 BE304BE1 		strh	r3, [fp, #-14]	@ movhi
+ 1893 0088 180000EA 		b	.L4
+ 1894              	.L5:
+  39:../main.c     ****       at24c04_byteread( i, &buffer[i] );
+ 1895              		.loc 1 39 0 discriminator 2
+ 1896 008c BE305BE1 		ldrh	r3, [fp, #-14]
+ 1897 0090 212E4BE2 		sub	r2, fp, #528
+ 1898 0094 033082E0 		add	r3, r2, r3
+ 1899 0098 BE205BE1 		ldrh	r2, [fp, #-14]
+ 1900 009c 0200A0E1 		mov	r0, r2
+ 1901 00a0 0310A0E1 		mov	r1, r3
+ 1902 00a4 FEFFFFEB 		bl	at24c04_byteread
+  40:../main.c     ****       val = buffer[i] & 0xF;
+ 1903              		.loc 1 40 0 discriminator 2
+ 1904 00a8 BE205BE1 		ldrh	r2, [fp, #-14]
+ 1905 00ac 58309FE5 		ldr	r3, .L7+8
+ 1906 00b0 0C104BE2 		sub	r1, fp, #12
+ 1907 00b4 022081E0 		add	r2, r1, r2
+ 1908 00b8 033082E0 		add	r3, r2, r3
+ 1909 00bc 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 1910 00c0 0F2003E2 		and	r2, r3, #15
+ 1911 00c4 38309FE5 		ldr	r3, .L7
+ 1912 00c8 002083E5 		str	r2, [r3, #0]
+  41:../main.c     ****       D8Led_symbol(val);
+ 1913              		.loc 1 41 0 discriminator 2
+ 1914 00cc 30309FE5 		ldr	r3, .L7
+ 1915 00d0 003093E5 		ldr	r3, [r3, #0]
+ 1916 00d4 0300A0E1 		mov	r0, r3
+ 1917 00d8 FEFFFFEB 		bl	D8Led_symbol
+  42:../main.c     ****       DelayMs(100);
+ 1918              		.loc 1 42 0 discriminator 2
+ 1919 00dc 6400A0E3 		mov	r0, #100
+ 1920 00e0 FEFFFFEB 		bl	DelayMs
+  38:../main.c     ****     for( i=0; i<AT24C04_DEPTH; i++ ){
+ 1921              		.loc 1 38 0 discriminator 2
+ 1922 00e4 BE305BE1 		ldrh	r3, [fp, #-14]	@ movhi
+ 1923 00e8 013083E2 		add	r3, r3, #1
+ 1924 00ec BE304BE1 		strh	r3, [fp, #-14]	@ movhi
+ 1925              	.L4:
+  38:../main.c     ****     for( i=0; i<AT24C04_DEPTH; i++ ){
+ 1926              		.loc 1 38 0 is_stmt 0 discriminator 1
+ 1927 00f0 BE205BE1 		ldrh	r2, [fp, #-14]
+ 1928 00f4 0C309FE5 		ldr	r3, .L7+4
+ 1929 00f8 030052E1 		cmp	r2, r3
+ 1930 00fc E2FFFF9A 		bls	.L5
+ 1931              	.L6:
+  43:../main.c     ****     }
+  44:../main.c     **** 
+  45:../main.c     ****     while( 1 );
+ 1932              		.loc 1 45 0 is_stmt 1 discriminator 1
+ 1933 0100 FEFFFFEA 		b	.L6
+ 1934              	.L8:
+ 1935              		.align	2
+ 1936              	.L7:
+ 1937 0104 00000000 		.word	val
+ 1938 0108 FF010000 		.word	511
+ 1939 010c FCFDFFFF 		.word	-516
+ 1940              		.cfi_endproc
+ 1941              	.LFE0:
+ 1943              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+                            *COM*:00000004 val
+C:\Users\USUARI~1\AppData\Local\Temp\cc1Vra5d.s:1830   .text:00000000 $a
+C:\Users\USUARI~1\AppData\Local\Temp\cc1Vra5d.s:1833   .text:00000000 Main
+C:\Users\USUARI~1\AppData\Local\Temp\cc1Vra5d.s:1937   .text:00000104 $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+sys_init
+iic_init
+D8Led_symbol
+at24c04_bytewrite
+DelayMs
+at24c04_byteread

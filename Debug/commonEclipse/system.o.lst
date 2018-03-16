@@ -1,0 +1,441 @@
+   1              		.cpu arm7tdmi
+   2              		.fpu softvfp
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 6
+  10              		.eabi_attribute 18, 4
+  11              		.file	"system.c"
+  21              	.Ltext0:
+  22              		.file 1 "../commonEclipse/system.c"
+ 1879              		.align	2
+ 1882              	clk_normal:
+ 1883 0000 00127A00 		.word	8000000
+ 1884              		.align	2
+ 1887              	clk_slow:
+ 1888 0004 00127A00 		.word	8000000
+ 1889              		.global	mclk
+ 1890              		.align	2
+ 1893              	mclk:
+ 1894 0008 00127A00 		.word	8000000
+ 1895              		.text
+ 1896              		.align	2
+ 1897              		.global	DelayMs
+ 1899              	DelayMs:
+ 1900              	.LFB0:
+   1:../commonEclipse/system.c **** /*
+   2:../commonEclipse/system.c ****  * system.c
+   3:../commonEclipse/system.c **** 
+   4:../commonEclipse/system.c ****  *
+   5:../commonEclipse/system.c ****  *  Created on: 14/03/2014
+   6:../commonEclipse/system.c ****  *      Author: Alberto
+   7:../commonEclipse/system.c ****  */
+   8:../commonEclipse/system.c **** 
+   9:../commonEclipse/system.c **** #include "s3c44b0x.h"
+  10:../commonEclipse/system.c **** #include "s3cev40.h"
+  11:../commonEclipse/system.c **** #include "common_types.h"
+  12:../commonEclipse/system.c **** #include "system.h"
+  13:../commonEclipse/system.c **** 
+  14:../commonEclipse/system.c **** static uint32 clk_normal = CLKIN;  // Frecuencia en modo normal (Hz)
+  15:../commonEclipse/system.c **** static uint32 clk_slow = CLKIN;	   // Frecuencia en modo slow (Hz)
+  16:../commonEclipse/system.c **** uint32 mclk = CLKIN;			   // Frecuencia actual del reloj (Hz)
+  17:../commonEclipse/system.c **** 
+  18:../commonEclipse/system.c **** void DelayMs(int ms_time)
+  19:../commonEclipse/system.c **** {
+ 1901              		.loc 1 19 0
+ 1902              		.cfi_startproc
+ 1903              		@ Function supports interworking.
+ 1904              		@ args = 0, pretend = 0, frame = 16
+ 1905              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1906 0000 0DC0A0E1 		mov	ip, sp
+ 1907              	.LCFI0:
+ 1908              		.cfi_def_cfa_register 12
+ 1909 0004 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1910 0008 04B04CE2 		sub	fp, ip, #4
+ 1911              		.cfi_offset 14, -8
+ 1912              		.cfi_offset 13, -12
+ 1913              		.cfi_offset 11, -16
+ 1914              	.LCFI1:
+ 1915              		.cfi_def_cfa 11, 4
+ 1916 000c 10D04DE2 		sub	sp, sp, #16
+ 1917 0010 18000BE5 		str	r0, [fp, #-24]
+  20:../commonEclipse/system.c **** 	int i;
+  21:../commonEclipse/system.c **** 
+  22:../commonEclipse/system.c **** 	for( i = 0 ; i < 1000*ms_time ; i++ )
+ 1918              		.loc 1 22 0
+ 1919 0014 0030A0E3 		mov	r3, #0
+ 1920 0018 10300BE5 		str	r3, [fp, #-16]
+ 1921 001c 020000EA 		b	.L2
+ 1922              	.L3:
+ 1923              		.loc 1 22 0 is_stmt 0 discriminator 2
+ 1924 0020 10301BE5 		ldr	r3, [fp, #-16]
+ 1925 0024 013083E2 		add	r3, r3, #1
+ 1926 0028 10300BE5 		str	r3, [fp, #-16]
+ 1927              	.L2:
+ 1928              		.loc 1 22 0 discriminator 1
+ 1929 002c 18201BE5 		ldr	r2, [fp, #-24]
+ 1930 0030 0230A0E1 		mov	r3, r2
+ 1931 0034 8332A0E1 		mov	r3, r3, asl #5
+ 1932 0038 033062E0 		rsb	r3, r2, r3
+ 1933 003c 0331A0E1 		mov	r3, r3, asl #2
+ 1934 0040 023083E0 		add	r3, r3, r2
+ 1935 0044 8331A0E1 		mov	r3, r3, asl #3
+ 1936 0048 0320A0E1 		mov	r2, r3
+ 1937 004c 10301BE5 		ldr	r3, [fp, #-16]
+ 1938 0050 030052E1 		cmp	r2, r3
+ 1939 0054 F1FFFFCA 		bgt	.L3
+  23:../commonEclipse/system.c **** 		;
+  24:../commonEclipse/system.c **** }
+ 1940              		.loc 1 24 0 is_stmt 1
+ 1941 0058 0CD04BE2 		sub	sp, fp, #12
+ 1942 005c 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1943 0060 1EFF2FE1 		bx	lr
+ 1944              		.cfi_endproc
+ 1945              	.LFE0:
+ 1947              		.align	2
+ 1948              		.global	sys_init
+ 1950              	sys_init:
+ 1951              	.LFB1:
+  25:../commonEclipse/system.c **** 
+  26:../commonEclipse/system.c **** void sys_init( void )
+  27:../commonEclipse/system.c **** {
+ 1952              		.loc 1 27 0
+ 1953              		.cfi_startproc
+ 1954              		@ Function supports interworking.
+ 1955              		@ args = 0, pretend = 0, frame = 0
+ 1956              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1957 0064 0DC0A0E1 		mov	ip, sp
+ 1958              	.LCFI2:
+ 1959              		.cfi_def_cfa_register 12
+ 1960 0068 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1961 006c 04B04CE2 		sub	fp, ip, #4
+ 1962              		.cfi_offset 14, -8
+ 1963              		.cfi_offset 13, -12
+ 1964              		.cfi_offset 11, -16
+ 1965              	.LCFI3:
+ 1966              		.cfi_def_cfa 11, 4
+  28:../commonEclipse/system.c **** 	WTCON  = 0;				// deshabilita el watchdog
+ 1967              		.loc 1 28 0
+ 1968 0070 E0309FE5 		ldr	r3, .L5
+ 1969 0074 0020A0E3 		mov	r2, #0
+ 1970 0078 002083E5 		str	r2, [r3, #0]
+  29:../commonEclipse/system.c **** 	INTMSK = ~0;			// enmascara todas las interrupciones
+ 1971              		.loc 1 29 0
+ 1972 007c D8309FE5 		ldr	r3, .L5+4
+ 1973 0080 0020E0E3 		mvn	r2, #0
+ 1974 0084 002083E5 		str	r2, [r3, #0]
+  30:../commonEclipse/system.c **** 
+  31:../commonEclipse/system.c **** 	// Configuracion del gestor de reloj
+  32:../commonEclipse/system.c **** 	LOCKTIME   = 0xfff;		// estabilización del PLL = 512 us
+ 1975              		.loc 1 32 0
+ 1976 0088 D0309FE5 		ldr	r3, .L5+8
+ 1977 008c D0209FE5 		ldr	r2, .L5+12
+ 1978 0090 002083E5 		str	r2, [r3, #0]
+  33:../commonEclipse/system.c **** 	PLLCON     = 0x38021;	// MCLK = 64MHz
+ 1979              		.loc 1 33 0
+ 1980 0094 7637A0E3 		mov	r3, #30932992
+ 1981 0098 C8209FE5 		ldr	r2, .L5+16
+ 1982 009c 002083E5 		str	r2, [r3, #0]
+  34:../commonEclipse/system.c **** 	clk_normal = 64000000;
+ 1983              		.loc 1 34 0
+ 1984 00a0 C4309FE5 		ldr	r3, .L5+20
+ 1985 00a4 C4209FE5 		ldr	r2, .L5+24
+ 1986 00a8 002083E5 		str	r2, [r3, #0]
+  35:../commonEclipse/system.c **** 	CLKSLOW    = 0x8;		// MCLK_SLOW = 500 KHz
+ 1987              		.loc 1 35 0
+ 1988 00ac C0309FE5 		ldr	r3, .L5+28
+ 1989 00b0 0820A0E3 		mov	r2, #8
+ 1990 00b4 002083E5 		str	r2, [r3, #0]
+  36:../commonEclipse/system.c **** 	clk_slow   = 500000;
+ 1991              		.loc 1 36 0
+ 1992 00b8 B8309FE5 		ldr	r3, .L5+32
+ 1993 00bc B8209FE5 		ldr	r2, .L5+36
+ 1994 00c0 002083E5 		str	r2, [r3, #0]
+  37:../commonEclipse/system.c **** 	CLKCON     = (1<<10) | (1<<7); 	// modo NORMAL y todos los controladores desactivados menos el BDM
+ 1995              		.loc 1 37 0
+ 1996 00c4 B4309FE5 		ldr	r3, .L5+40
+ 1997 00c8 122DA0E3 		mov	r2, #1152
+ 1998 00cc 002083E5 		str	r2, [r3, #0]
+  38:../commonEclipse/system.c **** 	mclk       = clk_normal;
+ 1999              		.loc 1 38 0
+ 2000 00d0 94309FE5 		ldr	r3, .L5+20
+ 2001 00d4 002093E5 		ldr	r2, [r3, #0]
+ 2002 00d8 A4309FE5 		ldr	r3, .L5+44
+ 2003 00dc 002083E5 		str	r2, [r3, #0]
+  39:../commonEclipse/system.c **** 
+  40:../commonEclipse/system.c **** 	// Configuracion del arbitro de bus
+  41:../commonEclipse/system.c **** 	SBUSCON = 0x8000001b;	// prioridad fija por defecto LCD > ZDMA > BDMA > IRQ
+ 2004              		.loc 1 41 0
+ 2005 00e0 7137A0E3 		mov	r3, #29622272
+ 2006 00e4 6E21A0E3 		mov	r2, #-2147483621
+ 2007 00e8 002083E5 		str	r2, [r3, #0]
+  42:../commonEclipse/system.c **** 
+  43:../commonEclipse/system.c **** 	// Configuracion de cache
+  44:../commonEclipse/system.c **** 	SYSCFG = 0;				// deshabilitada
+ 2008              		.loc 1 44 0
+ 2009 00ec 0735A0E3 		mov	r3, #29360128
+ 2010 00f0 0020A0E3 		mov	r2, #0
+ 2011 00f4 002083E5 		str	r2, [r3, #0]
+  45:../commonEclipse/system.c **** 
+  46:../commonEclipse/system.c **** 	// Configuacion del controlador de interrupciones
+  47:../commonEclipse/system.c **** 	I_PMST = 0x1f1b;		// prioridades fijas por defecto
+ 2012              		.loc 1 47 0
+ 2013 00f8 88309FE5 		ldr	r3, .L5+48
+ 2014 00fc 88209FE5 		ldr	r2, .L5+52
+ 2015 0100 002083E5 		str	r2, [r3, #0]
+  48:../commonEclipse/system.c **** 	I_PSLV = 0x1b1b1b1b;
+ 2016              		.loc 1 48 0
+ 2017 0104 84309FE5 		ldr	r3, .L5+56
+ 2018 0108 84209FE5 		ldr	r2, .L5+60
+ 2019 010c 002083E5 		str	r2, [r3, #0]
+  49:../commonEclipse/system.c **** 	INTMOD = 0;				// todas las interrupciones en modo IRQ
+ 2020              		.loc 1 49 0
+ 2021 0110 80309FE5 		ldr	r3, .L5+64
+ 2022 0114 0020A0E3 		mov	r2, #0
+ 2023 0118 002083E5 		str	r2, [r3, #0]
+  50:../commonEclipse/system.c **** 	EXTINTPND = ~0;			// borra las interrupciones externas pendientes por linea EINT7..4
+ 2024              		.loc 1 50 0
+ 2025 011c 78309FE5 		ldr	r3, .L5+68
+ 2026 0120 0020E0E3 		mvn	r2, #0
+ 2027 0124 002083E5 		str	r2, [r3, #0]
+  51:../commonEclipse/system.c ****     I_ISPC = ~0;			// borra todas las interrupciones pendientes
+ 2028              		.loc 1 51 0
+ 2029 0128 70309FE5 		ldr	r3, .L5+72
+ 2030 012c 0020E0E3 		mvn	r2, #0
+ 2031 0130 002083E5 		str	r2, [r3, #0]
+  52:../commonEclipse/system.c **** 	INTCON = 1;				// IRQ vectorizadas, linea IRQ activada, linea FIQ desactivada
+ 2032              		.loc 1 52 0
+ 2033 0134 1E36A0E3 		mov	r3, #31457280
+ 2034 0138 0120A0E3 		mov	r2, #1
+ 2035 013c 002083E5 		str	r2, [r3, #0]
+  53:../commonEclipse/system.c **** 
+  54:../commonEclipse/system.c **** 	// Configuracion de puertos
+  55:../commonEclipse/system.c **** 	port_init();
+ 2036              		.loc 1 55 0
+ 2037 0140 5C309FE5 		ldr	r3, .L5+76
+ 2038 0144 0FE0A0E1 		mov	lr, pc
+ 2039 0148 13FF2FE1 		bx	r3
+  56:../commonEclipse/system.c **** }
+ 2040              		.loc 1 56 0
+ 2041 014c 0CD04BE2 		sub	sp, fp, #12
+ 2042 0150 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2043 0154 1EFF2FE1 		bx	lr
+ 2044              	.L6:
+ 2045              		.align	2
+ 2046              	.L5:
+ 2047 0158 0000D301 		.word	30605312
+ 2048 015c 0C00E001 		.word	31457292
+ 2049 0160 0C00D801 		.word	30933004
+ 2050 0164 FF0F0000 		.word	4095
+ 2051 0168 21800300 		.word	229409
+ 2052 016c 00000000 		.word	clk_normal
+ 2053 0170 0090D003 		.word	64000000
+ 2054 0174 0800D801 		.word	30933000
+ 2055 0178 04000000 		.word	clk_slow
+ 2056 017c 20A10700 		.word	500000
+ 2057 0180 0400D801 		.word	30932996
+ 2058 0184 00000000 		.word	mclk
+ 2059 0188 1400E001 		.word	31457300
+ 2060 018c 1B1F0000 		.word	7963
+ 2061 0190 1000E001 		.word	31457296
+ 2062 0194 1B1B1B1B 		.word	454761243
+ 2063 0198 0800E001 		.word	31457288
+ 2064 019c 5400D201 		.word	30539860
+ 2065 01a0 2400E001 		.word	31457316
+ 2066 01a4 00000000 		.word	port_init
+ 2067              		.cfi_endproc
+ 2068              	.LFE1:
+ 2070              		.align	2
+ 2071              		.global	port_init
+ 2073              	port_init:
+ 2074              	.LFB2:
+  57:../commonEclipse/system.c **** 
+  58:../commonEclipse/system.c **** 
+  59:../commonEclipse/system.c **** inline void port_init( void )
+  60:../commonEclipse/system.c **** {
+ 2075              		.loc 1 60 0
+ 2076              		.cfi_startproc
+ 2077              		@ Function supports interworking.
+ 2078              		@ args = 0, pretend = 0, frame = 0
+ 2079              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2080 01a8 0DC0A0E1 		mov	ip, sp
+ 2081              	.LCFI4:
+ 2082              		.cfi_def_cfa_register 12
+ 2083 01ac 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2084 01b0 04B04CE2 		sub	fp, ip, #4
+ 2085              		.cfi_offset 14, -8
+ 2086              		.cfi_offset 13, -12
+ 2087              		.cfi_offset 11, -16
+ 2088              	.LCFI5:
+ 2089              		.cfi_def_cfa 11, 4
+  61:../commonEclipse/system.c **** 
+  62:../commonEclipse/system.c **** 	PDATA = ~0;
+ 2090              		.loc 1 62 0
+ 2091 01b4 00319FE5 		ldr	r3, .L8
+ 2092 01b8 0020E0E3 		mvn	r2, #0
+ 2093 01bc 002083E5 		str	r2, [r3, #0]
+  63:../commonEclipse/system.c **** 	PCONA = (0x7f<<1);		// PA[7:1] = ADDR[22:16], resto = out
+ 2094              		.loc 1 63 0
+ 2095 01c0 F8309FE5 		ldr	r3, .L8+4
+ 2096 01c4 FE20A0E3 		mov	r2, #254
+ 2097 01c8 002083E5 		str	r2, [r3, #0]
+  64:../commonEclipse/system.c **** 
+  65:../commonEclipse/system.c **** 	PDATB = ~0;
+ 2098              		.loc 1 65 0
+ 2099 01cc F0309FE5 		ldr	r3, .L8+8
+ 2100 01d0 0020E0E3 		mvn	r2, #0
+ 2101 01d4 002083E5 		str	r2, [r3, #0]
+  66:../commonEclipse/system.c **** 	PCONB = (1<<8) | (1<<6) | (0xf);	// PA[8] = nGCS3, PA[6] = nGCS1, PA[3:0] = (nSRAS, nSCAS, SCLK, S
+ 2102              		.loc 1 66 0
+ 2103 01d8 E8309FE5 		ldr	r3, .L8+12
+ 2104 01dc E8209FE5 		ldr	r2, .L8+16
+ 2105 01e0 002083E5 		str	r2, [r3, #0]
+  67:../commonEclipse/system.c **** 
+  68:../commonEclipse/system.c **** 	PDATC = ~0;
+ 2106              		.loc 1 68 0
+ 2107 01e4 E4309FE5 		ldr	r3, .L8+20
+ 2108 01e8 0020E0E3 		mvn	r2, #0
+ 2109 01ec 002083E5 		str	r2, [r3, #0]
+  69:../commonEclipse/system.c **** 	PCONC = 0x55555555;		// PC[x] = out
+ 2110              		.loc 1 69 0
+ 2111 01f0 DC309FE5 		ldr	r3, .L8+24
+ 2112 01f4 DC209FE5 		ldr	r2, .L8+28
+ 2113 01f8 002083E5 		str	r2, [r3, #0]
+  70:../commonEclipse/system.c **** 	PUPC  = ~0;		 		// Pull-up disable
+ 2114              		.loc 1 70 0
+ 2115 01fc D8309FE5 		ldr	r3, .L8+32
+ 2116 0200 0020E0E3 		mvn	r2, #0
+ 2117 0204 002083E5 		str	r2, [r3, #0]
+  71:../commonEclipse/system.c **** 
+  72:../commonEclipse/system.c **** 	PDATD = ~0;
+ 2118              		.loc 1 72 0
+ 2119 0208 D0309FE5 		ldr	r3, .L8+36
+ 2120 020c 0020E0E3 		mvn	r2, #0
+ 2121 0210 002083E5 		str	r2, [r3, #0]
+  73:../commonEclipse/system.c **** 	PCOND = 0x5555;			// PD[x] = out
+ 2122              		.loc 1 73 0
+ 2123 0214 C8309FE5 		ldr	r3, .L8+40
+ 2124 0218 C8209FE5 		ldr	r2, .L8+44
+ 2125 021c 002083E5 		str	r2, [r3, #0]
+  74:../commonEclipse/system.c **** 	PUPD  = ~0;				// Pull-up disable
+ 2126              		.loc 1 74 0
+ 2127 0220 C4309FE5 		ldr	r3, .L8+48
+ 2128 0224 0020E0E3 		mvn	r2, #0
+ 2129 0228 002083E5 		str	r2, [r3, #0]
+  75:../commonEclipse/system.c **** 
+  76:../commonEclipse/system.c **** 	PDATE = ~0;
+ 2130              		.loc 1 76 0
+ 2131 022c BC309FE5 		ldr	r3, .L8+52
+ 2132 0230 0020E0E3 		mvn	r2, #0
+ 2133 0234 002083E5 		str	r2, [r3, #0]
+  77:../commonEclipse/system.c **** 	PCONE = 0x15555; 		// PE[x] = out
+ 2134              		.loc 1 77 0
+ 2135 0238 B4309FE5 		ldr	r3, .L8+56
+ 2136 023c B4209FE5 		ldr	r2, .L8+60
+ 2137 0240 002083E5 		str	r2, [r3, #0]
+  78:../commonEclipse/system.c **** 	PUPE  = ~0;		 		// Pull-up disable
+ 2138              		.loc 1 78 0
+ 2139 0244 B0309FE5 		ldr	r3, .L8+64
+ 2140 0248 0020E0E3 		mvn	r2, #0
+ 2141 024c 002083E5 		str	r2, [r3, #0]
+  79:../commonEclipse/system.c **** 
+  80:../commonEclipse/system.c **** 	PDATF = ~0;
+ 2142              		.loc 1 80 0
+ 2143 0250 A8309FE5 		ldr	r3, .L8+68
+ 2144 0254 0020E0E3 		mvn	r2, #0
+ 2145 0258 002083E5 		str	r2, [r3, #0]
+  81:../commonEclipse/system.c **** 	PCONF = 0x002555; 		// PF[8] = in, PF[7] = in, resto = out
+ 2146              		.loc 1 81 0
+ 2147 025c A0309FE5 		ldr	r3, .L8+72
+ 2148 0260 A0209FE5 		ldr	r2, .L8+76
+ 2149 0264 002083E5 		str	r2, [r3, #0]
+  82:../commonEclipse/system.c **** 	PUPF  = ~0;			 	// Pull-up disable
+ 2150              		.loc 1 82 0
+ 2151 0268 9C309FE5 		ldr	r3, .L8+80
+ 2152 026c 0020E0E3 		mvn	r2, #0
+ 2153 0270 002083E5 		str	r2, [r3, #0]
+  83:../commonEclipse/system.c **** 
+  84:../commonEclipse/system.c **** 	PDATG = ~0;
+ 2154              		.loc 1 84 0
+ 2155 0274 94309FE5 		ldr	r3, .L8+84
+ 2156 0278 0020E0E3 		mvn	r2, #0
+ 2157 027c 002083E5 		str	r2, [r3, #0]
+  85:../commonEclipse/system.c **** 	PCONG = 0x5555;			// PG[x] = out
+ 2158              		.loc 1 85 0
+ 2159 0280 8C309FE5 		ldr	r3, .L8+88
+ 2160 0284 5C209FE5 		ldr	r2, .L8+44
+ 2161 0288 002083E5 		str	r2, [r3, #0]
+  86:../commonEclipse/system.c **** 	PUPG  = ~0;		 		// Pull-up disable
+ 2162              		.loc 1 86 0
+ 2163 028c 84309FE5 		ldr	r3, .L8+92
+ 2164 0290 0020E0E3 		mvn	r2, #0
+ 2165 0294 002083E5 		str	r2, [r3, #0]
+  87:../commonEclipse/system.c **** 
+  88:../commonEclipse/system.c **** 	SPUCR = 0x7;			// DATA[15:0] Pull-up disable
+ 2166              		.loc 1 88 0
+ 2167 0298 7C309FE5 		ldr	r3, .L8+96
+ 2168 029c 0720A0E3 		mov	r2, #7
+ 2169 02a0 002083E5 		str	r2, [r3, #0]
+  89:../commonEclipse/system.c **** 
+  90:../commonEclipse/system.c **** 	EXTINT = 0x22222222;	// Falling edge triggered
+ 2170              		.loc 1 90 0
+ 2171 02a4 74309FE5 		ldr	r3, .L8+100
+ 2172 02a8 74209FE5 		ldr	r2, .L8+104
+ 2173 02ac 002083E5 		str	r2, [r3, #0]
+  91:../commonEclipse/system.c **** }
+ 2174              		.loc 1 91 0
+ 2175 02b0 0CD04BE2 		sub	sp, fp, #12
+ 2176 02b4 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2177 02b8 1EFF2FE1 		bx	lr
+ 2178              	.L9:
+ 2179              		.align	2
+ 2180              	.L8:
+ 2181 02bc 0400D201 		.word	30539780
+ 2182 02c0 0000D201 		.word	30539776
+ 2183 02c4 0C00D201 		.word	30539788
+ 2184 02c8 0800D201 		.word	30539784
+ 2185 02cc 4F010000 		.word	335
+ 2186 02d0 1400D201 		.word	30539796
+ 2187 02d4 1000D201 		.word	30539792
+ 2188 02d8 55555555 		.word	1431655765
+ 2189 02dc 1800D201 		.word	30539800
+ 2190 02e0 2000D201 		.word	30539808
+ 2191 02e4 1C00D201 		.word	30539804
+ 2192 02e8 55550000 		.word	21845
+ 2193 02ec 2400D201 		.word	30539812
+ 2194 02f0 2C00D201 		.word	30539820
+ 2195 02f4 2800D201 		.word	30539816
+ 2196 02f8 55550100 		.word	87381
+ 2197 02fc 3000D201 		.word	30539824
+ 2198 0300 3800D201 		.word	30539832
+ 2199 0304 3400D201 		.word	30539828
+ 2200 0308 55250000 		.word	9557
+ 2201 030c 3C00D201 		.word	30539836
+ 2202 0310 4400D201 		.word	30539844
+ 2203 0314 4000D201 		.word	30539840
+ 2204 0318 4800D201 		.word	30539848
+ 2205 031c 4C00D201 		.word	30539852
+ 2206 0320 5000D201 		.word	30539856
+ 2207 0324 22222222 		.word	572662306
+ 2208              		.cfi_endproc
+ 2209              	.LFE2:
+ 2211              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 system.c
+C:\Users\USUARI~1\AppData\Local\Temp\ccGtLKPj.s:1879   .data:00000000 $d
+C:\Users\USUARI~1\AppData\Local\Temp\ccGtLKPj.s:1882   .data:00000000 clk_normal
+C:\Users\USUARI~1\AppData\Local\Temp\ccGtLKPj.s:1887   .data:00000004 clk_slow
+C:\Users\USUARI~1\AppData\Local\Temp\ccGtLKPj.s:1893   .data:00000008 mclk
+C:\Users\USUARI~1\AppData\Local\Temp\ccGtLKPj.s:1896   .text:00000000 $a
+C:\Users\USUARI~1\AppData\Local\Temp\ccGtLKPj.s:1899   .text:00000000 DelayMs
+C:\Users\USUARI~1\AppData\Local\Temp\ccGtLKPj.s:1950   .text:00000064 sys_init
+C:\Users\USUARI~1\AppData\Local\Temp\ccGtLKPj.s:2047   .text:00000158 $d
+C:\Users\USUARI~1\AppData\Local\Temp\ccGtLKPj.s:2073   .text:000001a8 port_init
+C:\Users\USUARI~1\AppData\Local\Temp\ccGtLKPj.s:2070   .text:000001a8 $a
+C:\Users\USUARI~1\AppData\Local\Temp\ccGtLKPj.s:2181   .text:000002bc $d
+                     .debug_frame:00000010 $d
+
+NO UNDEFINED SYMBOLS
